@@ -227,6 +227,9 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/messenger": {
+        "version": "4.1.x-dev"
+    },
     "symfony/monolog-bridge": {
         "version": "v4.0.9"
     },
