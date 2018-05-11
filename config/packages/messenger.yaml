@@ -1,0 +1,6 @@
+framework:
+    messenger:
+        transports:
+            file: 'file://%kernel.project_dir%/var/queue.json'
+        routing:
+            '*': file
