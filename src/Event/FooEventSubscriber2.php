@@ -2,14 +2,21 @@
 
 namespace App\Event;
 
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-final class FooEventSubscriber2 implements MessageHandlerInterface
+final class FooEventSubscriber2 implements MessageSubscriberInterface
 {
-    public function __invoke(FooEvent $event)
+    public static function getHandledMessages(): array
+    {
+        return [
+            FooEvent::class => 'doFoo',
+        ];
+    }
+
+    public function doFoo(FooEvent $event)
     {
         //throw new \Exception();
 
