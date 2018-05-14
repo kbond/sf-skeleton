@@ -1,5 +1,14 @@
 framework:
     messenger:
+        chain_handler_class: App\Messenger\Handler\CatchExceptionChainHandler
+        buses:
+            messenger.bus.default:
+                default_middleware: false
+                middleware:
+                    - logging
+                    - route_messages
+                    - messenger.middleware.allow_no_handler
+                    - App\Messenger\Middleware\WrapExceptionHandleMessageMiddleware
         transports:
             file: 'file://%kernel.project_dir%/var/queue.json'
         routing:
