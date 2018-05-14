@@ -8,6 +8,7 @@ framework:
                     - logging
                     - route_messages
                     - messenger.middleware.allow_no_handler
+                    - App\Messenger\Middleware\SingleHandlerMiddleware
                     - App\Messenger\Middleware\WrapExceptionHandleMessageMiddleware
         transports:
             file: 'file://%kernel.project_dir%/var/queue.json'
