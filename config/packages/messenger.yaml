@@ -9,6 +9,7 @@ framework:
                     - route_messages
                     - messenger.middleware.allow_no_handler
                     - App\Messenger\Middleware\SaveFailedMessageMiddleware
+                    - App\Messenger\Middleware\RetryMessageMiddleware
                     - App\Messenger\Middleware\SingleHandlerMiddleware
                     - App\Messenger\Middleware\WrapExceptionHandleMessageMiddleware
         transports:

@@ -25,10 +25,10 @@ final class SingleHandlerMiddleware implements MiddlewareInterface, EnvelopeAwar
     {
         $envelope = Envelope::wrap($message);
 
-        /** @var SingleHandlerConfiguration|null $retryConfig */
-        if ($retryConfig = $envelope->get(SingleHandlerConfiguration::class)) {
-            return $this->retry(
-                $this->handlerLocator->resolve($retryConfig->getHandlerKey()),
+        /** @var SingleHandlerConfiguration|null $singleHandlerConfig */
+        if ($singleHandlerConfig = $envelope->get(SingleHandlerConfiguration::class)) {
+            return $this->handleSingle(
+                $this->handlerLocator->resolve($singleHandlerConfig->getHandlerKey()),
                 $envelope->getMessage()
             );
         }
@@ -36,7 +36,7 @@ final class SingleHandlerMiddleware implements MiddlewareInterface, EnvelopeAwar
         return $next($message);
     }
 
-    private function retry(callable $handler, object $message)
+    private function handleSingle(callable $handler, object $message)
     {
         try {
             return $handler($message);
