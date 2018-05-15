@@ -2,6 +2,7 @@
 
 namespace App\Event;
 
+use App\Messenger\Exception\RetryMessageException;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 /**
@@ -18,6 +19,7 @@ final class FooEventSubscriber2 implements MessageSubscriberInterface
 
     public function doFoo(FooEvent $event)
     {
+        throw new RetryMessageException('need to retry', null, 5, 3);
         //throw new \Exception();
 
         dump(__CLASS__);
