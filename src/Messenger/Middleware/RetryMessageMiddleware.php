@@ -92,7 +92,7 @@ final class RetryMessageMiddleware implements MiddlewareInterface, EnvelopeAware
             throw $failedMessage;
         }
 
-        if ($attempt > $exception->getMaxAttempts()) {
+        if ($attempt >= $exception->getMaxAttempts()) {
             // throw FailedTooManyTimesException?
             throw $failedMessage;
         }
@@ -107,7 +107,7 @@ final class RetryMessageMiddleware implements MiddlewareInterface, EnvelopeAware
 
         $this->container->get(MessageBusInterface::class)->dispatch(
             Envelope::wrap($failedMessage->getViolatingMessage())
-                ->with(new RetryConfiguration(++$attempt))
+                ->with(new RetryConfiguration(++$attempt, $exception->getDelayInSeconds()))
                 ->with(new SingleHandlerConfiguration($failedMessage->getHandlerServiceId()))
         );
 

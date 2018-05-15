@@ -2,6 +2,7 @@
 
 namespace App\Messenger\Transport;
 
+use App\Messenger\Middleware\Configuration\RetryConfiguration;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
 use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
@@ -33,6 +34,13 @@ final class FileTransport implements TransportInterface
                 continue;
             }
 
+            /** @var RetryConfiguration $retryConfig */
+            if (($retryConfig = $envelope->get(RetryConfiguration::class)) && $retryConfig->getTimeToRun() > time()) {
+                $this->addToQueue($envelope);
+
+                continue;
+            }
+
             $handler($envelope);
         }
     }
@@ -44,9 +52,7 @@ final class FileTransport implements TransportInterface
 
     public function send(Envelope $envelope): void
     {
-        $queue = $this->getQueue();
-        $queue[] = $this->encoder->encode($envelope);
-        $this->saveQueue($queue);
+        $this->addToQueue($envelope);
     }
 
     private function getNext(): ?Envelope
@@ -60,6 +66,13 @@ final class FileTransport implements TransportInterface
         $this->saveQueue($queue);
 
         return $this->decoder->decode($next);
+    }
+
+    private function addToQueue(Envelope $envelope): void
+    {
+        $queue = $this->getQueue();
+        $queue[] = $this->encoder->encode($envelope);
+        $this->saveQueue($queue);
     }
 
     private function getQueue(): array

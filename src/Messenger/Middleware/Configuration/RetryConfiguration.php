@@ -10,10 +10,12 @@ use Symfony\Component\Messenger\EnvelopeItemInterface;
 final class RetryConfiguration implements EnvelopeItemInterface
 {
     private $attempt;
+    private $timeToRun;
 
-    public function __construct(int $attempt)
+    public function __construct(int $attempt, int $delayInSeconds)
     {
         $this->attempt = $attempt;
+        $this->timeToRun = time() + $delayInSeconds;
     }
 
     public function getAttempt(): int
@@ -21,13 +23,24 @@ final class RetryConfiguration implements EnvelopeItemInterface
         return $this->attempt;
     }
 
+    public function getTimeToRun(): int
+    {
+        return $this->timeToRun;
+    }
+
     public function serialize()
     {
-        return serialize([$this->attempt]);
+        return serialize([
+            $this->attempt,
+            $this->timeToRun
+        ]);
     }
 
     public function unserialize($serialized)
     {
-        [$this->attempt] = unserialize($serialized, ['allowed_classes' => false]);
+        [
+            $this->attempt,
+            $this->timeToRun
+        ] = unserialize($serialized, ['allowed_classes' => false]);
     }
 }
